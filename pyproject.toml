@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-bunny"
-version = "1.0.1"
+version = "1.0.2"
 description = "A django storage for bunny.net"
 authors = ["Neki <neki@nekidev.com>"]
 license = "MIT License"
@@ -12,6 +12,13 @@ python = ">=3.7,<4.0"
 Django = ">=3.0.0"
 requests = "^2.30.0"
 python-dateutil = "^2.8.2"
+
+
+[[tool.poetry.source]]
+name = "GitHub"
+url = "https://github.com/Nekidev/django-bunny/"
+default = true
+secondary = false
 
 
 [build-system]
