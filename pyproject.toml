@@ -3,9 +3,14 @@ name = "django-bunny"
 version = "1.0.2"
 description = "A django storage for bunny.net"
 authors = ["Neki <neki@nekidev.com>"]
-license = "MIT License"
+maintainers = ["Neki <neki@nekidev.com>"]
+license = "MIT"
 readme = "README.md"
 packages = [{include = "django_bunny"}]
+homepage = "https://github.com/Nekidev/django-bunny/"
+repository = "https://github.com/Nekidev/django-bunny/"
+documentation = "https://github.com/Nekidev/django-bunny/tree/main/README.md"
+keywords = ["django", "bunnycdn", "django-storage"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
