@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-bunny"
-version = "1.0.4"
+version = "1.0.5"
 description = "A django storage for bunny.net"
 authors = ["Neki <neki@nekidev.com>"]
 maintainers = ["Neki <neki@nekidev.com>"]
