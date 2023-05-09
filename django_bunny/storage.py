@@ -25,26 +25,44 @@ class BunnyStorage(Storage):
     headers = None
 
     def __init__(self, **kwargs):
-        username = (
-            kwargs["username"] if "username" in kwargs else settings.BUNNY_USERNAME
-        )
-        password = (
-            kwargs["password"] if "password" in kwargs else settings.BUNNY_PASSWORD
-        )
+        try:
+            username = (
+                kwargs["username"] if "username" in kwargs else settings.BUNNY_USERNAME
+            )
+        except AttributeError:
+            raise ImproperlyConfigured(
+                "Setting BUNNY_USERNAME or `username` option is required."
+            )
+        
+        try:
+            password = (
+                kwargs["password"] if "password" in kwargs else settings.BUNNY_PASSWORD
+            )
+        except AttributeError:
+            raise ImproperlyConfigured(
+                "Setting BUNNY_PASSWORD or `password` option is required."
+            )
+        
         region = (
             kwargs["region"]
             if "region" in kwargs
             else settings.BUNNY_REGION
-            if settings.BUNNY_REGION
+            if hasattr(settings, 'BUNNY_REGION')
             else "ny"
         )
-        hostname = (
-            kwargs["hostname"]
-            if "hostname" in kwargs
-            else settings.BUNNY_HOSTNAME
-            if settings.BUNNY_HOSTNAME
-            else settings.MEDIA_URL
-        )
+        
+        try:
+            hostname = (
+                kwargs["hostname"]
+                if "hostname" in kwargs
+                else settings.BUNNY_HOSTNAME
+                if hasattr(settings, 'BUNNY_HOSTNAME')
+                else settings.MEDIA_URL
+            )
+        except AttributeError:
+            raise ImproperlyConfigured(
+                "Neither `BUNNY_HOSTNAME` or `MEDIA_URL` are configured. django-bunny requires one of them to work."
+            )
 
         if not username:
             raise ImproperlyConfigured(
