@@ -104,7 +104,7 @@ class BunnyStorage(Storage):
         return True
 
     def url(self, name: str) -> str:
-        return self.hostname + name
+        return safe_join(self.hostname, name)
 
     def size(self, name: str) -> int:
         r = requests.head(self.url(name))
