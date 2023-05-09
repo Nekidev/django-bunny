@@ -92,27 +92,27 @@ class BunnyStorage(Storage):
     def _full_path(self, name) -> str:
         if name == "/":
             name = ""
-        return safe_join(self.base_url, name).replace("\\", "/")
+        return self.base_url + name.replace("\\", "/")
 
     def _save(self, name, content) -> str:
         r = requests.put(
-            safe_join(self.base_url, name), data=content, headers=self.headers
+            self.base_url + name, data=content, headers=self.headers
         )
         return name
 
     def _open(self, name, mode="rb"):
-        r = requests.get(safe_join(self.base_url, name), headers=self.headers)
+        r = requests.get(self.base_url + name, headers=self.headers)
         r.raise_for_status()
 
         return r.raw
 
     def delete(self, name) -> str:
-        r = requests.delete(safe_join(self.base_url, name), headers=self.headers)
+        r = requests.delete(self.base_url + name, headers=self.headers)
 
         return name
 
     def exists(self, name) -> bool:
-        r = requests.head(safe_join(self.base_url, name), headers=self.headers)
+        r = requests.head(self.base_url + name, headers=self.headers)
 
         if r.status_code == 404:
             return False
@@ -122,7 +122,7 @@ class BunnyStorage(Storage):
         return True
 
     def url(self, name: str) -> str:
-        return safe_join(self.hostname, name)
+        return self.hostname + name
 
     def size(self, name: str) -> int:
         r = requests.head(self.url(name))
@@ -133,7 +133,7 @@ class BunnyStorage(Storage):
         return int(file_size)
 
     def listdir(self, path) -> tuple:
-        r = requests.get(safe_join(self.base_url, path), headers=self.headers)
+        r = requests.get(self.base_url + path, headers=self.headers)
         r.raise_for_status()
 
         objects = r.json()
@@ -145,7 +145,7 @@ class BunnyStorage(Storage):
 
     def get_created_time(self, name) -> datetime.datetime:
         r = requests.get(
-            safe_join(self.base_url, name.rsplit("/", 1)[0]), headers=self.headers
+            self.base_url + name.rsplit("/", 1)[0], headers=self.headers
         )
         r.raise_for_status()
 
@@ -172,7 +172,7 @@ class BunnyStorage(Storage):
 
     def get_modified_time(self, name) -> datetime.datetime:
         r = requests.get(
-            safe_join(self.base_url, name.rsplit("/", 1)[0]), headers=self.headers
+            self.base_url + name.rsplit("/", 1)[0], headers=self.headers
         )
         r.raise_for_status()
 
