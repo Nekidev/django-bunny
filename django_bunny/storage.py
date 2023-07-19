@@ -96,12 +96,12 @@ class BunnyStorage(Storage):
 
     def _save(self, name, content) -> str:
         r = requests.put(
-            self.base_url + name, data=content, headers=self.headers
+            self.base_url + name.replace("\\", "/"), data=content, headers=self.headers
         )
         return name
 
     def _open(self, name, mode="rb"):
-        r = requests.get(self.base_url + name, headers=self.headers)
+        r = requests.get(self.base_url + name.replace("\\", "/"), headers=self.headers)
         r.raise_for_status()
 
         return r.raw
@@ -112,7 +112,7 @@ class BunnyStorage(Storage):
         return name
 
     def exists(self, name) -> bool:
-        r = requests.head(self.base_url + name, headers=self.headers)
+        r = requests.head(self.base_url + name.replace("\\", "/"), headers=self.headers)
 
         if r.status_code == 404:
             return False
@@ -122,7 +122,7 @@ class BunnyStorage(Storage):
         return True
 
     def url(self, name: str) -> str:
-        return self.hostname + name
+        return self.hostname + name.replace("\\", "/")
 
     def size(self, name: str) -> int:
         r = requests.head(self.url(name))
@@ -133,7 +133,7 @@ class BunnyStorage(Storage):
         return int(file_size)
 
     def listdir(self, path) -> tuple:
-        r = requests.get(self.base_url + path, headers=self.headers)
+        r = requests.get(self.base_url + path.replace("\\", "/"), headers=self.headers)
         r.raise_for_status()
 
         objects = r.json()
@@ -145,16 +145,22 @@ class BunnyStorage(Storage):
 
     def get_created_time(self, name) -> datetime.datetime:
         r = requests.get(
-            self.base_url + name.rsplit("/", 1)[0], headers=self.headers
+            self.base_url + name.replace("\\", "/").rsplit("/", 1)[0], headers=self.headers
         )
         r.raise_for_status()
 
         iso_date = None
 
         for item in r.json():
-            if item["ObjectName"] == name:
-                iso_date = item["DateCreated"]
-                break
+            try:
+                if item["ObjectName"] == name.rsplit("/", 1)[len(name.rsplit("/", 1) - 1)]:
+                    iso_date = item["DateCreated"]
+                    break
+            except:
+                # Error fetching creation date for this file. A
+                # NotImplementedError is raised as specified by the Django
+                # documentation.
+                raise NotImplementedError()
 
         if iso_date is None:
             raise ValueError(f"File '{name}' does not exist.")
@@ -172,16 +178,22 @@ class BunnyStorage(Storage):
 
     def get_modified_time(self, name) -> datetime.datetime:
         r = requests.get(
-            self.base_url + name.rsplit("/", 1)[0], headers=self.headers
+            self.base_url + name.replace("\\", "/").rsplit("/", 1)[0], headers=self.headers
         )
         r.raise_for_status()
 
         iso_date = None
 
         for item in r.json():
-            if item["ObjectName"] == name.rsplit("/", 1)[1]:
-                iso_date = item["LastChanged"]
-                break
+            try:
+                if item["ObjectName"] == name.rsplit("/", 1)[len(name.rsplit("/", 1) - 1)]:
+                    iso_date = item["LastChanged"]
+                    break
+            except:
+                # Error fetching last modification date for this file. A
+                # NotImplementedError is raised as specified by the Django
+                # documentation.
+                raise NotImplementedError()
 
         if iso_date is None:
             raise ValueError(f"File '{name}' does not exist.")
