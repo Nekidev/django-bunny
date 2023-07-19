@@ -38,6 +38,11 @@ BUNNY_REGION = "my-storage-region"
 # Optional. For example, `https://myzone.b-cdn.net/`. `MEDIA_URL` will be used
 # if this is not set.
 BUNNY_HOSTNAME = "my-pullzone-hostname"
+
+
+# Optional. For example, `static/`. If not set, files will be stored in the
+# storage's root dir.
+BUNNY_BASE_DIR = "my-storage-base-dir-where-i-want-my-files-stored/"
 ```
 
 Finally, depending on which version of Django you are using you'll need to create one of these variables:
@@ -61,7 +66,10 @@ DEFAULT_FILE_STORAGE = 'django_bunny.storage.BunnyStorage'
             "region": "my-storage-region",
             
             # Optional. `MEDIA_URL` will be used if it is not set
-            "hostname": "my-pullzone-hostname"
+            "hostname": "my-pullzone-hostname",
+
+            # Optional. `BUNNY_BASE_DIR` will be used if it is not set.
+            "base_dir": "my-storage-base-dir-where-i-want-my-files-stored/"
         }
     },
 }

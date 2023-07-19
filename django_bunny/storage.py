@@ -87,7 +87,12 @@ class BunnyStorage(Storage):
         self.hostname = hostname
 
         self.base_url += f"{username}/"
-        self.headers = {"AccessKey": password}
+        self.headers = {"AccessKey": password, "Accept": "*/*"}
+
+        try:
+            self.base_url += f"{kwargs['base_dir']}/" if "base_dir" in kwargs else settings.BUNNY_BASE_DIR
+        except:
+            pass
 
     def _full_path(self, name) -> str:
         if name == "/":
