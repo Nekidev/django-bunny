@@ -90,7 +90,7 @@ class BunnyStorage(Storage):
         self.headers = {"AccessKey": password, "Accept": "*/*"}
 
         try:
-            self.base_url += f"{kwargs['base_dir']}/" if "base_dir" in kwargs else settings.BUNNY_BASE_DIR
+            self.base_url += kwargs['base_dir'] if "base_dir" in kwargs else settings.BUNNY_BASE_DIR
         except:
             pass
 
