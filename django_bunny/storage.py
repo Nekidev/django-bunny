@@ -117,7 +117,8 @@ class BunnyStorage(Storage):
         return name
 
     def exists(self, name) -> bool:
-        r = requests.head(self.base_url + name.replace("\\", "/"), headers=self.headers)
+        r = requests.get(self.base_url + name.replace("\\", "/"), headers=self.headers, stream=True)
+        r.close()
 
         if r.status_code == 404:
             return False
@@ -130,7 +131,9 @@ class BunnyStorage(Storage):
         return self.hostname + name.replace("\\", "/")
 
     def size(self, name: str) -> int:
-        r = requests.head(self.url(name))
+        r = requests.get(self.url(name), stream=True)
+        r.close()
+
         r.raise_for_status()
 
         file_size = r.headers.get("Content-Length", 0)
