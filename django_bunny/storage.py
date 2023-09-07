@@ -87,7 +87,7 @@ class BunnyStorage(Storage):
         self.hostname = hostname
 
         self.base_url += f"{username}/"
-        self.base_dir = kwargs['base_dir'] if "base_dir" in kwargs else settings.BUNNY_BASE_DIR
+        self.base_dir = kwargs['base_dir'] if "base_dir" in kwargs else settings.BUNNY_BASE_DIR if hasattr(settings, 'BUNNY_BASE_DIR') else ""
         self.headers = {"AccessKey": password, "Accept": "*/*"}
 
         try:
