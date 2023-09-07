@@ -87,10 +87,11 @@ class BunnyStorage(Storage):
         self.hostname = hostname
 
         self.base_url += f"{username}/"
+        self.base_dir = kwargs['base_dir'] if "base_dir" in kwargs else settings.BUNNY_BASE_DIR
         self.headers = {"AccessKey": password, "Accept": "*/*"}
 
         try:
-            self.base_url += kwargs['base_dir'] if "base_dir" in kwargs else settings.BUNNY_BASE_DIR
+            self.base_url += self.base_dir
         except:
             pass
 
@@ -128,7 +129,7 @@ class BunnyStorage(Storage):
         return True
 
     def url(self, name: str) -> str:
-        return self.hostname + name.replace("\\", "/")
+        return self.hostname + self.base_dir + name.replace("\\", "/")
 
     def size(self, name: str) -> int:
         r = requests.get(self.url(name), stream=True)
